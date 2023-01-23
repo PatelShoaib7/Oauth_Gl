@@ -7,7 +7,7 @@ passport.use(new GoogleStrategy({
     callbackURL: "https://oauthg.onrender.com/auth/google/callback",
     scope: ['profile','email']
   },
-  function(accessToken, refreshToken, profile, cb) {
+  async function(accessToken, refreshToken, profile, cb) {
     // User.findOrCreate({ googleId: profile.id }, function (err, user) {
       console.log(profile._json)
       console.log(accessToken)
