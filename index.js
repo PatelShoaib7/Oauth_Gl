@@ -29,15 +29,13 @@ app.get("/github/callback",async(req, res)=>{
       GitHub_Token=user[1];
       const userDATA = user[0];
         const {login,id,name ,email ,   location , bio, company , public_repos, twitter_username} =userDATA
-       const check_For_USER  = await userMOdel.findOne({$or:[{username},{gitHub_ID} ,{email} ,{name}]})
+       const check_For_USER  = await userMOdel.findOne({$or:[{username},{email} ,{name}]})
        if(check_For_USER === null){
         const user_DATA_SAVE = await userMOdel({username:login ,gitHub_ID:id ,name ,email ,   location , bio , company , public_repos, twitter_username});
-        user_DATA_SAVE.save().
+        user_DATA_SAVE.save();
           res.status(200).send({message : "data savavd to data bases" , sucess:true})
-       }else{
-        res.redirect("/home")
        }
-       //console.log(GitHub_Token , userDATA , check_For_USER)
+    res.redirect("/home")
 })
  app.get('/auth/google',
   passport.authenticate('google', { scope: ['profile','email'] }));
