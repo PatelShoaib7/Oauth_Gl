@@ -78,10 +78,10 @@ app.get('/auth/google/callback',
   app.get("/home",async (req, res)=>{
     const token = req.headers.authorization
     console.log(req.headers.authorization)
-    if(GitHub_Token!= undefined  || Google_Token!= undefined ){
+    ifGitHub_Token!= undefined && token== undefined || Google_Token!= undefined && token == undefined ){
           res.send({msg:"Welcome To Home Page ", token:GitHub_Token || Google_Token , sucess:true})
     }else{
-          if(token){
+          if(token != undefined){
           const decode = jwt.verify(token ,secret_key);
           res.status(201).send({msg:"Welcome To Home Page ", sucess:true})
           }else{
