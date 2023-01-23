@@ -16,7 +16,6 @@ const secret_key = process.env.JWT_SECRET_KEY
   let GitHub_Token;
 
 
-
 app.get("/"  ,(req, res)=>{
       res.send("home page ")
 })
@@ -29,10 +28,15 @@ app.get("/github/callback",async(req, res)=>{
       GitHub_Token=user[1];
       const userDATA = user[0];
         const {login,id,name ,email ,   location , bio, company , public_repos, twitter_username} =userDATA;
+        const check_For_USER  = await userMOdel.findOne({$or:[{username},{email}]});
+        if(check_For_USER == null){
         const user_DATA_SAVE = await userMOdel({username:login ,gitHub_ID:id ,name ,email ,   location , bio , company , public_repos, twitter_username});
-        user_DATA_SAVE.save();
+           user_DATA_SAVE.save();
+        }
     res.redirect("/home")
 })
+
+//LOGIN WITH GOOOGL
  app.get('/auth/google',
   passport.authenticate('google', { scope: ['profile','email'] }));
 app.get('/auth/google/callback', 
@@ -42,25 +46,33 @@ app.get('/auth/google/callback',
     Google_Token = "hb#^0dh488$5$%^st9*57&*%jdniOLK#fsu89%^&*JH9$891;m480cnk";
     res.redirect('/home');
   });
+
+  //SIG UP PAGE CODE
   app.post("/signup", async (req, res)=>{
       const  {username , email , age , password , city , address , mob_Num , name , status} = req.body;
-        const hashPassword = await argon2.hash(password)
-         const check_For_USER  = await userMOdel.findOne({$or:[{username},{hashPassword} ,{email}]})
+        //console.log(req.body)
+         const hashPassword = await argon2.hash(password)
+         //console.log(hashPassword)
+        const check_For_USER  = await userMOdel.findOne({$and:[{username},{hashPassword}]});
+         console.log(check_For_USER)
           if(check_For_USER === null){
-            const user =  await   userMOdel({username , password:hashPassword,email, age , city , address , mob_Num , name , status})
-            user.save().
+             const user =  await   userMOdel({username , password:hashPassword, email, age , city , address , mob_Num , name , status})
+             user.save()
              res.status(200).send({message : "data savavd to data bases" , sucess:true})
           }else{
             res.status(500).send({message:'oops user Already Present ', error:true})
           }
   })
+
+  //LOGIN PAGE CODE
   app.post("/login", async (req, res)=>{
     const {username , password , email}= req.body;
     const user =  await   userMOdel.findOne({username});
-    const verification = await argon2.verify(user.password, password)
-    //console.log(verification)
+    //console.log(user.password)
+    const verification = user != null ? await argon2.verify(user.password, password) : false
+    console.log(verification)
     if(verification){
-        const jwt_token = jwt.sign({user} , secret_key, {expiresIn:'24 hr'});
+        const jwt_token = jwt.sign({user}, secret_key, {expiresIn:'24 hr'});
         res.status(201).send({message :"login sucessful",jwt_token , sucess:true})
     } else{
           res.status(401).send({message: 'oops user is not registred please sign up first', error:true})
@@ -69,9 +81,9 @@ app.get('/auth/google/callback',
   })
 
   app.get("/home",async (req, res)=>{
-    const token = req.headers.authorsization
+    const token = req.headers.authorization
     console.log(req.headers.authorization)
-    if(GitHub_Token!=undefined  || Google_Token!=undefined ){
+    if(GitHub_Token!= undefined  || Google_Token!= undefined ){
           res.send({msg:"Welcome To Home Page ", token:GitHub_Token || Google_Token , sucess:true})
     }else{
           if(token){
