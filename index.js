@@ -45,7 +45,7 @@ app.get('/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/login' , session:false}),
   function(req, res) {
     // Successful authentication, redirect home
-    Google_Token = "svui";
+    Google_Token = "hb#^0dh488$5$%^st9*57&*%jdniOLK#fsu89%^&*JH9$891;m480cnk";
     res.redirect('/home');
   });
   app.post("/signup", async (req, res)=>{
