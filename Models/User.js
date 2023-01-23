@@ -15,7 +15,8 @@ const mongoose  = require("mongoose");
          gitHub_ID:{type:String},
          twitter_username:{type:String},
          facebook_username:{type:String},
-         instagram_username:{type:String}
+         instagram_username:{type:String},
+         img:{type:String}
 
   })
   const userMOdel =  mongoose.model("user", UserSchema)
