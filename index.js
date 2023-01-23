@@ -3,7 +3,7 @@ const cors = require('cors');
 const app = express();
 const connection = require("./db");
 const userMOdel = require("./Models/User")
-// const passport = require('./Configs/google-oauth');
+const passport = require('./Configs/google-oauth');
 const jwt =  require("jsonwebtoken");
 const PORT = process.env.PORT || 4000;
 const userDataFrom_GITHUB = require('./Configs/GutHub-Oauth');
@@ -35,14 +35,14 @@ app.get("/github/callback",async(req, res)=>{
        //console.log(GitHub_Token , userDATA , check_For_USER)
        res.redirect("/home")
 })
-//  app.get('/auth/google',
-//   passport.authenticate('google', { scope: ['profile','email'] }));
-// app.get('/auth/google/callback', 
-//   passport.authenticate('google', { failureRedirect: '/login' , session:false}),
-//   function(req, res) {
-//     // Successful authentication, redirect home
-//     res.redirect('/home');
-//   });
+ app.get('/auth/google',
+  passport.authenticate('google', { scope: ['profile','email'] }));
+app.get('/auth/google/callback', 
+  passport.authenticate('google', { failureRedirect: '/login' , session:false}),
+  function(req, res) {
+    // Successful authentication, redirect home
+    res.redirect('/home');
+  });
   app.post("/signup", async (req, res)=>{
       const  {username , email , age , password , city , address , mob_Num , name , status} = req.body;
         const hashPassword = await argon2.hash(password)
