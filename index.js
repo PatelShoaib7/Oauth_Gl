@@ -39,8 +39,9 @@ app.get("/github/callback",async(req, res)=>{
   passport.authenticate('google', { scope: ['profile','email'] }));
 app.get('/auth/google/callback', 
   passport.authenticate('google', { failureRedirect: '/login' , session:false}),
-  function(req, res) {
+  function(req, res, accessToken) {
     // Successful authentication, redirect home
+      Google_Token = "gviutfgtdiyiguihuihEDTAtha";
     res.redirect('/home');
   });
   app.post("/signup", async (req, res)=>{
