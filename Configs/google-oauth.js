@@ -10,7 +10,10 @@ passport.use(new GoogleStrategy({
   async function(accessToken, refreshToken, profile, cb) {
     // User.findOrCreate({ googleId: profile.id }, function (err, user) {
       console.log(profile._json)
-      console.log(accessToken)
+      console.log(accessToken);
+      let user = profile._json
+      const saveUser = await userMOdel({user});
+      saveUser.save();
        return cb(null, profile , accessToken);
     // })
   }
