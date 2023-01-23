@@ -35,9 +35,10 @@ app.get("/github/callback",async(req, res)=>{
         const user = await userMOdel({username:login ,gitHub_ID:id ,name ,email ,   location , bio , company , public_repos, twitter_username});
          user.save().
           res.status(200).send({message : "data savavd to data bases" , sucess:true})
-       }
+       }else{
        //console.log(GitHub_Token , userDATA , check_For_USER)
        res.redirect("/home")
+       }
 })
  app.get('/auth/google',
   passport.authenticate('google', { scope: ['profile','email'] }));
