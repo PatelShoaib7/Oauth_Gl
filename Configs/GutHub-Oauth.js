@@ -1,5 +1,6 @@
   require('dotenv').config();
-  const axios =  require('axios')
+  const axios =  require('axios');
+const userMOdel = require('../Models/User');
 
 // app.get("/github/callback",async(req, res)=>{
 //     const token = req.query.code;
@@ -15,23 +16,22 @@
           accept:"application/json"
         }
       })
-      //console.log('Value Of Accces Token ',access_token.data.access_token);
+      console.log('Value Of Accces Token ',access_token.data.access_token);
       const user=  await axios.get('https://api.github.com/user',{
        headers:{
          Authorization:`Bearer ${access_token.data.access_token}`
        }
       })
          let GitHub_Token = access_token.data.access_token;
+         console.log(GitHub_Token , ' GitHub_Token')
          let userDATA = user.data;
-     //console.log(userDATA.data)
-       return [userDATA , GitHub_Token]
-    //     const oAuth_User = userDATA.data
-    //   const user =  await   userMOdel({oAuth_User});
-    //   user.save();
-    //   GITHUB_TOKEN = access_token.data.access_token
-    //  //  res.status(200).send({message : "data savavd to data bases", access_token:tkn_acess})
-    //  res.redirect("/home")
-
+         const {login,id,name ,email ,   location , bio, company , public_repos, twitter_username} =userDATA;
+         const check_For_USER  = await userMOdel.findOne({$and:[{name},{email}]});
+         if(check_For_USER == null){
+         const user_DATA_SAVE = await userMOdel({username:login ,gitHub_ID:id ,name ,email ,   location , bio , company , public_repos, twitter_username});
+           user_DATA_SAVE.save();
+        }
+       return GitHub_Token
   }
 
   module.exports = userDataFrom_GITHUB;
