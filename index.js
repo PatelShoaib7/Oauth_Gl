@@ -25,20 +25,15 @@ app.get("/github/callback",async(req, res)=>{
       const token = req.query.code;
       const user = await  userDataFrom_GITHUB(token)
       //console.log(user);
-      GitHub_Token=user[1];
-      const userDATA = user[0];
-        const {login,id,name ,email ,   location , bio, company , public_repos, twitter_username} =userDATA;
-        const check_For_USER  = await userMOdel.findOne({$or:[{username},{email}]});
-        if(check_For_USER == null){
-        const user_DATA_SAVE = await userMOdel({username:login ,gitHub_ID:id ,name ,email ,   location , bio , company , public_repos, twitter_username});
-           user_DATA_SAVE.save();
-        }
+      GitHub_Token=user;
     res.redirect("/home")
 })
 
 //LOGIN WITH GOOOGL
  app.get('/auth/google',
   passport.authenticate('google', { scope: ['profile','email'] }));
+
+
 app.get('/auth/google/callback', 
   passport.authenticate('google', { failureRedirect: '/login' , session:false}),
   function(req, res) {
