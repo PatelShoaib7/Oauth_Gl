@@ -84,10 +84,9 @@ app.get('/auth/google/callback',
           if(token != undefined){
           const decode = jwt.verify(token ,secret_key);
           res.status(201).send({msg:"Welcome To Home Page ", sucess:true})
-          }else{
-          res.status(401).send({msg: "Error In Varifying Token Please Try Again", error:true})
           }
     }
+     res.status(401).send({msg: "Error In Varifying Token Or Token Is Invalid ", error:true})
 })
 app.listen(PORT, async ()=>{
     try{ await connection;
